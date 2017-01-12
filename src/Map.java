@@ -1,4 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
+
+import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -9,8 +11,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * @version 0.1 (2017.01.11)
  */
 class Map {
-    private int[][] arr;
-    private OpenSimplexNoise noise;
+    private final int[][] arr;
+    private final OpenSimplexNoise noise;
 
     Map(int size) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -50,6 +52,21 @@ class Map {
         }
     }
 
+    /**
+     * Returns the value in the array at a specific point
+     * @param point a Point at which the value should be returned
+     * @return  an int representing the value in the specified cell
+     */
+    int getValueAt(Point point){
+        // To get the right cell in the array,
+        // we divide the coordinates by SIZE
+        return this.arr[point.y/Main.SIZE][point.x/Main.SIZE];
+    }
+
+    /**
+     * Returns the array
+     * @return  an int[][] representing the map
+     */
     int[][] getArr() {
         return this.arr;
     }

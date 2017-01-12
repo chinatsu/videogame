@@ -16,6 +16,9 @@ import java.awt.Point;
  */
 public class Main extends Application {
     static final int SIZE = 16;
+    private Unit player;
+    private Unit goal;
+    private Map map;
 
     /**
      * @param args  does nothing as of now
@@ -27,77 +30,104 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("A videogame");
-        Map map = new Map(gridSize);
-        map.populate(); // Generate walls
-        Canvas bgCanvas = initBackground(map);
-        Canvas fgCanvas = initForeground(map);
-        Scene scene = initScene([bgCanvas, fgCanvas])
+        int gridSize = 20;
+        this.map = new Map(gridSize);
+        this.map.populate(); // Generate walls
+        Canvas bgCanvas = initBackground(gridSize);
+        Canvas fgCanvas = initForeground(gridSize);
+        Canvas[] canvases = new Canvas[] {bgCanvas, fgCanvas};
+        Scene scene = initScene(canvases);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private Canvas initBackground(Map map) {
+    /**
+     * Initializes the background canvas
+     * @param gridSize  an int which represents the size of the grid
+     * @return  a Canvas object representing the background layer
+     */
+    private Canvas initBackground(int gridSize) {
         Canvas bgCanvas = new Canvas(gridSize*SIZE, gridSize*SIZE);
         GraphicsContext bgGc = bgCanvas.getGraphicsContext2D();
-        drawLines(bgGc); // Draw gridlines,
-        map.draw(bgGc); // then draw the map walls onto the background layer
+        drawLines(bgGc); // Draw grid lines,
+        this.map.draw(bgGc); // then draw the map walls onto the background layer
         return bgCanvas;
     }
 
-    private Canvas initForeground(Map map) {
+    /**
+     * Initializes the foreground canvas
+     * @param gridSize  an int which represents the size of the grid
+     * @return  a Canvas object representing the foreground layer
+     */
+    private Canvas initForeground(int gridSize) {
         Canvas fgCanvas = new Canvas(gridSize*SIZE, gridSize*SIZE);
         GraphicsContext fgGc = fgCanvas.getGraphicsContext2D();
-        Unit goal = new Unit(fgGc, map.getArr(), "#cccc00"); // Place a goal,
-        Unit player = new Unit(fgGc, map.getArr(), "#0000ff"); // and a player onto the foreground layer
+        this.goal = new Unit(fgGc, this.map.getArr(), "#cccc00"); // Place a goal,
+        this.player = new Unit(fgGc, this.map.getArr(), "#0000ff"); // and a player onto the foreground layer
         return fgCanvas;
     }
 
+    /**
+     * Gathers the canvases and adds them to a scene
+     * @param canvases a list of Canvas objects to add to the scene
+     * @return  a resulting Scene with the added Canvas layers
+     */
     private Scene initScene(Canvas[] canvases) {
-      StackPane root = new StackPane();
-      for (canvas : canvases) {
-          stackpane.getChildren().add(canvas);
-      }
-      root.setStyle("-fx-background-color: #faf8ce");
-      Scene scene = new Scene(root);
-      scene.setOnKeyPressed(e -> {
-          switch (e.getCode()) {
-              case D:
-              case RIGHT:
-                  player.move(1, 0);
-                  break;
-              case A:
-              case LEFT:
-                  player.move(-1, 0);
-                  break;
-              case W:
-              case UP:
-                  player.move(0, -1);
-                  break;
-              case S:
-              case DOWN:
-                  player.move(0, 1);
-                  break;
-              case R:
-                  swapBackground(root);
-                  break;
-              case Q:
-                  player.moveRotate();
-                  Point point = player.getCoordinates();
-                  if (arr[point.y/16][point.x/16] == 1) {
-                      // After rotating, there is a chance that the player ends up
-                      // inside a wall. In which case, we'll say the player has died.
-                      System.out.println("You got stuck in a wall and died");
-                      System.exit(0);
-                  }
-                  break;
-          }
-          if (player.getCoordinates().equals(goal.getCoordinates())) {
-              System.out.println("You win!");
-              System.exit(0);
-          }
-      });
+        StackPane root = new StackPane();
+        for (Canvas canvas : canvases) {
+            root.getChildren().add(canvas);
+        }
+        root.setStyle("-fx-background-color: #faf8ce");
+        Scene scene = new Scene(root);
+        setInput(scene, root);
+        return scene;
     }
 
+    /**
+     * A function which sets the game's controls
+     * and checks if the player has won or has died.
+     * @param scene a Scene object to handle inputs of.
+     */
+    private void setInput(Scene scene, StackPane root) {
+        scene.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case D:
+                case RIGHT:
+                    this.player.move(1, 0);
+                    break;
+                case A:
+                case LEFT:
+                    this.player.move(-1, 0);
+                    break;
+                case W:
+                case UP:
+                    this.player.move(0, -1);
+                    break;
+                case S:
+                case DOWN:
+                    this.player.move(0, 1);
+                    break;
+                case R:
+                    swapBackground(root);
+                    break;
+                case Q:
+                    this.player.moveRotate();
+                    Point point = this.player.getCoordinates();
+                    if (this.map.getValueAt(point) == 1) {
+                        // After rotating, there is a chance that the player ends up
+                        // inside a wall. In which case, we'll say the player has died.
+                        System.out.println("You got stuck in a wall and died");
+                        System.exit(0);
+                    }
+                    break;
+            }
+            if (this.player.getCoordinates().equals(this.goal.getCoordinates())) {
+                // Always check after an input, if the player has reached the goal
+                System.out.println("You win!");
+                System.exit(0);
+            }
+        });
+    }
     /**
      * Draw grid lines onto a layer
      * @param gc    a GraphicsContext instance to draw onto
