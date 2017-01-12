@@ -27,59 +27,75 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("A videogame");
-        Map map = new Map(20);
-        map.populate();
-        int[][] arr = map.getArr(); // The map may be used directly instead of de-referenced like this
-        Canvas gridCanvas = new Canvas(arr.length*SIZE, arr.length*SIZE);
-        Canvas fgCanvas = new Canvas(arr.length*SIZE, arr.length*SIZE);
-        GraphicsContext bg_gc = gridCanvas.getGraphicsContext2D();
-        GraphicsContext fg_gc = fgCanvas.getGraphicsContext2D();
-        drawLines(bg_gc);
-        map.draw(bg_gc);
-        Unit goal = new Unit(fg_gc, arr, "#cccc00");
-        Unit player = new Unit(fg_gc, arr, "#0000ff");
-        StackPane root = new StackPane(gridCanvas, fgCanvas);
-        root.setStyle("-fx-background-color: #faf8ce");
-        Scene scene = new Scene(root);
-        scene.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case D:
-                case RIGHT:
-                    player.move(1, 0);
-                    break;
-                case A:
-                case LEFT:
-                    player.move(-1, 0);
-                    break;
-                case W:
-                case UP:
-                    player.move(0, -1);
-                    break;
-                case S:
-                case DOWN:
-                    player.move(0, 1);
-                    break;
-                case R:
-                    swapBackground(root);
-                    break;
-                case Q:
-                    player.moveRotate();
-                    Point point = player.getCoordinates();
-                    if (arr[point.y/16][point.x/16] == 1) {
-                        // After rotating, there is a chance that the player ends up
-                        // inside a wall. In which case, we'll say the player has died.
-                        System.out.println("You got stuck in a wall and died");
-                        System.exit(0);
-                    }
-                    break;
-            }
-            if (player.getCoordinates().equals(goal.getCoordinates())) {
-                System.out.println("You win!");
-                System.exit(0);
-            }
-        });
+        Map map = new Map(gridSize);
+        map.populate(); // Generate walls
+        Canvas bgCanvas = initBackground(map);
+        Canvas fgCanvas = initForeground(map);
+        Scene scene = initScene([bgCanvas, fgCanvas])
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private Canvas initBackground(Map map) {
+        Canvas bgCanvas = new Canvas(gridSize*SIZE, gridSize*SIZE);
+        GraphicsContext bgGc = bgCanvas.getGraphicsContext2D();
+        drawLines(bgGc); // Draw gridlines,
+        map.draw(bgGc); // then draw the map walls onto the background layer
+        return bgCanvas;
+    }
+
+    private Canvas initForeground(Map map) {
+        Canvas fgCanvas = new Canvas(gridSize*SIZE, gridSize*SIZE);
+        GraphicsContext fgGc = fgCanvas.getGraphicsContext2D();
+        Unit goal = new Unit(fgGc, map.getArr(), "#cccc00"); // Place a goal,
+        Unit player = new Unit(fgGc, map.getArr(), "#0000ff"); // and a player onto the foreground layer
+        return fgCanvas;
+    }
+
+    private Scene initScene(Canvas[] canvases) {
+      StackPane root = new StackPane();
+      for (canvas : canvases) {
+          stackpane.getChildren().add(canvas);
+      }
+      root.setStyle("-fx-background-color: #faf8ce");
+      Scene scene = new Scene(root);
+      scene.setOnKeyPressed(e -> {
+          switch (e.getCode()) {
+              case D:
+              case RIGHT:
+                  player.move(1, 0);
+                  break;
+              case A:
+              case LEFT:
+                  player.move(-1, 0);
+                  break;
+              case W:
+              case UP:
+                  player.move(0, -1);
+                  break;
+              case S:
+              case DOWN:
+                  player.move(0, 1);
+                  break;
+              case R:
+                  swapBackground(root);
+                  break;
+              case Q:
+                  player.moveRotate();
+                  Point point = player.getCoordinates();
+                  if (arr[point.y/16][point.x/16] == 1) {
+                      // After rotating, there is a chance that the player ends up
+                      // inside a wall. In which case, we'll say the player has died.
+                      System.out.println("You got stuck in a wall and died");
+                      System.exit(0);
+                  }
+                  break;
+          }
+          if (player.getCoordinates().equals(goal.getCoordinates())) {
+              System.out.println("You win!");
+              System.exit(0);
+          }
+      });
     }
 
     /**
