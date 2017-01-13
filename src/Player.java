@@ -1,6 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
 
-import java.awt.*;
+import java.awt.Point;
 
 /**
  * A Player class which extends Unit with methods to

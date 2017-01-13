@@ -16,21 +16,57 @@ import java.awt.Point;
  */
 public class Main extends Application {
     /**
-     * SCALE is an int that declares the size of each cell
+     * an int that declares the size of each cell
      * in the graphical view
      */
     static final int SCALE = 16;
     /**
-     * SIZE is an int that declares the size of the array
+     * an int that declares the size of the array
      * `SIZE * SCALE` is then the window size
      */
     static final int SIZE = 30;
+
+    /**
+     * Color of walls
+     */
+    static final String COLOR_WALL = "#000000";
+
+    /**
+     * Color of "traversable" walls
+     */
+    static final String COLOR_WALL_ALT = "#333333";
+
+    /**
+     * Color of the player
+     */
+    static final String COLOR_PLAYER = "#0000ff";
+
+    /**
+     * Color of the goal
+     */
+    static final String COLOR_GOAL = "#cccc00";
+
+    /**
+     * Color of the grid lines
+     */
+    static final String COLOR_GRID = "#cbbbc0";
+
+    /**
+     * Color of the background (floor)
+     */
+    static final String COLOR_FLOOR = "#faf8ce";
+
+    /**
+     * Alternate color of the background
+     */
+    static final String COLOR_FLOOR_ALT = "#faf8ff";
 
     private Player player;
     private Unit goal;
     private Map map;
 
     /**
+     * Launches JavaFX with arguments
      * @param args  does nothing as of now
      */
     public static void main(String[] args) {
@@ -69,8 +105,8 @@ public class Main extends Application {
     private Canvas initForeground() {
         Canvas fgCanvas = new Canvas(SIZE*SCALE, SIZE*SCALE);
         GraphicsContext fgGc = fgCanvas.getGraphicsContext2D();
-        this.goal = new Unit(fgGc, this.map.getArr(), "#cccc00"); // Place a goal,
-        this.player = new Player(fgGc, this.map.getArr(), "#0000ff"); // and a player onto the foreground layer
+        this.goal = new Unit(fgGc, this.map.getArr(), COLOR_GOAL); // Place a goal,
+        this.player = new Player(fgGc, this.map.getArr(), COLOR_PLAYER); // and a player onto the foreground layer
         return fgCanvas;
     }
 
@@ -85,7 +121,7 @@ public class Main extends Application {
         for (Canvas canvas : canvases) {
             root.getChildren().add(canvas);
         }
-        root.setStyle("-fx-background-color: #faf8ce");
+        root.setStyle("-fx-background-color: " + COLOR_FLOOR);
         Scene scene = new Scene(root);
         setInput(scene, root);
         return scene;
@@ -94,12 +130,16 @@ public class Main extends Application {
     /**
      * A function which sets the game's controls
      * and checks if the player has won or has died.
+     * TODO: Use a config file to map inputs and actions instead of hardcoding
      * @param scene a Scene object to handle inputs of.
      */
     private void setInput(Scene scene, StackPane root) {
         scene.setOnKeyPressed(e -> {
             Point point = this.player.getArrayCoordinates();
             if (this.map.getValueAt(point) == 2) {
+                // When the player has moved on top of a traversable wall,
+                // turn it into a real wall which cannot be moved into
+                // afterwards.
                 this.map.setValueAt(point, 1);
             }
             switch (e.getCode()) {
@@ -142,6 +182,9 @@ public class Main extends Application {
                         System.exit(0);
                     }
                     break;
+                case ESCAPE:
+                    System.out.println("Exiting game.");
+                    System.exit(0);
             }
             if (this.player.getArrayCoordinates().equals(this.goal.getArrayCoordinates())) {
                 // Always check after an input, if the player has reached the goal
@@ -155,7 +198,7 @@ public class Main extends Application {
      * @param gc    a GraphicsContext instance to draw onto
      */
     private void drawLines(GraphicsContext gc) {
-        gc.setStroke(Paint.valueOf("#cbbbc0"));
+        gc.setStroke(Paint.valueOf(COLOR_GRID));
         for (int i = 0; i < gc.getCanvas().getWidth(); i+=SCALE) {
             // Since the canvas is always equilateral, we can draw vertical
             // and horizontal lines in every iteration
@@ -171,11 +214,11 @@ public class Main extends Application {
      * @param root  the root StackPane object containing all the GraphicsContext layers
      */
     private void swapBackground(StackPane root) {
-        if (root.getStyle().equals("-fx-background-color: #faf8ce")) {
-            root.setStyle("-fx-background-color: #faf8ff");
+        if (root.getStyle().equals("-fx-background-color: " + COLOR_FLOOR)) {
+            root.setStyle("-fx-background-color: " + COLOR_FLOOR_ALT);
         }
-        else if (root.getStyle().equals("-fx-background-color: #faf8ff")) {
-            root.setStyle("-fx-background-color: #faf8ce");
+        else if (root.getStyle().equals("-fx-background-color: " + COLOR_FLOOR_ALT)) {
+            root.setStyle("-fx-background-color: " + COLOR_FLOOR);
         }
     }
 }

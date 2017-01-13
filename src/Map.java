@@ -1,7 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -74,11 +74,11 @@ class Map {
      */
     private void drawCell(int x, int y) {
         if (this.array[y][x] == 1) {
-            this.gc.setFill(javafx.scene.paint.Paint.valueOf("#000000"));
+            this.gc.setFill(javafx.scene.paint.Paint.valueOf(Main.COLOR_WALL));
             this.gc.fillRect(x*Main.SCALE, y*Main.SCALE, Main.SCALE, Main.SCALE);
         }
         else if (this.array[y][x] == 2) {
-            this.gc.setFill(Paint.valueOf("#333333"));
+            this.gc.setFill(Paint.valueOf(Main.COLOR_WALL_ALT));
             this.gc.fillRect(x*Main.SCALE, y*Main.SCALE, Main.SCALE, Main.SCALE);
         }
     }
@@ -92,7 +92,7 @@ class Map {
     }
 
     /**
-     * Returns the array
+     * Returns the map array
      * @return  an int[][] representing the map
      */
     int[][] getArr() {

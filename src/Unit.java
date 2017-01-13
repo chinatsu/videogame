@@ -17,7 +17,7 @@ class Unit {
 
     /**
      * The constructor function for Unit, which spawns to a random position on a 2D array.
-     * @param gc    a GraphicsContext layer to spawn the unit onto
+     * @param gc    a GraphicsContext layer to spawn the graphical unit representation onto
      * @param array   an int[][] from the Map, it is only used to check wall collision as of right now
      * @param color a String formatted as a CSS color code to color the unit, e.g. "#0000ff"
      */
