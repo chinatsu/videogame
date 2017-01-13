@@ -8,73 +8,49 @@ import java.util.concurrent.ThreadLocalRandom;
  * It contains some functions primarily to control an eventual player,
  * which also controls drawing onto a GraphicsContext.
  * @author Kent Daleng
- * @version 0.1 (2017.01.11)
+ * @version 0.2 (2017.01.13)
  */
 class Unit {
     private Point point;
     private final GraphicsContext gc;
-    private final int[][] arr;
+    private final int[][] array;
 
     /**
      * The constructor function for Unit, which spawns to a random position on a 2D array.
-     * @param gc    a GraphicsContext layer to spawn the unit onto
-     * @param arr   an int[][] from the Map, it is only used to check wall collision as of right now
+     * @param gc    a GraphicsContext layer to spawn the graphical unit representation onto
+     * @param array   an int[][] from the Map, it is only used to check wall collision as of right now
      * @param color a String formatted as a CSS color code to color the unit, e.g. "#0000ff"
      */
-    Unit(GraphicsContext gc, int[][] arr, String color) {
-        this.arr = arr;
+    Unit(GraphicsContext gc, int[][] array, String color) {
+        this.array = array;
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        this.point = new Point(Math.round(random.nextInt(0, this.arr.length-1) * Main.SIZE),
-                               Math.round(random.nextInt(0, this.arr.length-1) * Main.SIZE));
-        while (this.arr[this.point.y/Main.SIZE][this.point.x/Main.SIZE] == 1) {
+        this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
+                               Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
+        while (this.array[this.point.y/Main.SCALE][this.point.x/Main.SCALE] == 1) {
             // If a wall exists where the unit has spawned, try again until we spawn on a floor
-            this.point = new Point(Math.round(random.nextInt(0, this.arr.length-1) * Main.SIZE),
-                                   Math.round(random.nextInt(0, this.arr.length-1) * Main.SIZE));
+            this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
+                                   Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
         }
         this.gc = gc;
         this.gc.setFill(Paint.valueOf(color));
-        this.gc.fillRect(this.point.x, this.point.y, Main.SIZE, Main.SIZE);
+        this.gc.fillRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
     }
 
     /**
-     * Move the player to another space relative from its current position
-     * @param x     moves the player horizontally (negative is to the right)
-     * @param y     moves the player vertically (negative is upwards)
-     */
-    void move(int x, int y) {
-        if (this.point.x + x*Main.SIZE > this.gc.getCanvas().getWidth() - Main.SIZE || this.point.x + x*Main.SIZE < 0) {
-            return;
-        }
-        else if (this.point.y + y*16 > this.gc.getCanvas().getHeight() - Main.SIZE || this.point.y + y*Main.SIZE < 0) {
-            return;
-        }
-        if (this.arr[(this.point.y + y*Main.SIZE)/Main.SIZE][(this.point.x + x*Main.SIZE)/Main.SIZE] == 1) {
-            return;
-        }
-        this.gc.clearRect(this.point.x, this.point.y, Main.SIZE, Main.SIZE);
-        this.point.x += x*Main.SIZE;
-        this.point.y += y*Main.SIZE;
-        this.gc.fillRect(this.point.x, this.point.y, Main.SIZE, Main.SIZE);
-    }
-
-    /**
-     * Rotate the player counter clockwise around the grid's center.
-     */
-    void moveRotate() {
-        this.gc.clearRect(this.point.x, this.point.y, Main.SIZE, Main.SIZE);
-        double c = this.arr.length/2;
-        double new_y = (0 - (this.point.x/Main.SIZE - c) + c - 1)*Main.SIZE;
-        this.point.x = this.point.y;
-        this.point.y = (int) new_y;
-        this.gc.fillRect(this.point.x, this.point.y, Main.SIZE, Main.SIZE);
-    }
-
-    /**
-     * Returns the current coordinates of the unit
+     * Returns the current coordinates of the unit on the Canvas
      * @return  a Point to represent an (x, y) position of the unit
      */
     Point getCoordinates() {
         return this.point;
     }
 
+    /**
+     * Returns the current coordinates of the unit in the map array
+     * @return  a Point to represent an (x, y) position of the unit
+     */
+    Point getArrayCoordinates() {
+        int x = this.point.x / Main.SCALE;
+        int y = this.point.y / Main.SCALE;
+        return new Point(x, y);
+    }
 }
