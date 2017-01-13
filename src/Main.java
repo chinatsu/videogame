@@ -132,6 +132,7 @@ public class Main extends Application {
      * and checks if the player has won or has died.
      * TODO: Use a config file to map inputs and actions instead of hardcoding
      * @param scene a Scene object to handle inputs of.
+     * @param root  a StackPane to handle certain things
      */
     private void setInput(Scene scene, StackPane root) {
         scene.setOnKeyPressed(e -> {
