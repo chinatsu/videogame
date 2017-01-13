@@ -33,29 +33,26 @@ hvordan man skal bruke noe.
 Her er uansett noen spesifikke eksempler.
 ```java
 String string = "Hello!";
-if (string.contains("Hello") {
+if (string.contains("Hello")) {
     System.out.println(string + " Strings are cool");
 }
 // Hello! Strings are cool
 ```
 
 ```java
-import java.util.ArrayList;
-import java.util.Iterator;
-
-ArrayList<int> values = new ArrayList<int>();
+ArrayList<Integer> values = new ArrayList<Integer>();
 for (int i = 0; i < 10; i++) {
     values.add(i);
 }
-// {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-Iterator<int> iter_values = values.iterator();
-while (iter.hasNext()) {
-    value = iter.next();
+// [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Iterator<Integer> iter_values = values.iterator();
+while (iter_values.hasNext()) {
+    int value = iter_values.next();
     if (value % 3 == 0) {
-        value.remove();
+        iter_values.remove();
     }
 }
-// {1, 2, 4, 5, 7, 8}
+// [1, 2, 4, 5, 7, 8]
 ```
 
 ```java
@@ -66,15 +63,15 @@ import java.util.HashMap;
  * [ Rank       | 10  ]
  * [ Max Combo  | 12  ]
  * [ Max Speed  | 230 ]
- * [ Avg. Speed | 139 ]
+ * [ Avg. Speed | 139 ]
  */
-Html website = parse('http://somewebsite.com/tableoverview.html')
-ArrayList<Tag> table = website.find('table').getChildren();
+Html website = parse("http://somewebsite.com/tableoverview.html")
+ArrayList<Tag> table = website.find("table").getChildren();
 HashMap<String, Int> entries = new HashMap<String, String>();
 for (child : children) {
-    ArrayList<Tag> tableRows = child.find_all('tr');
-    String key = tableRows[0].getText();
-    String value = Integer.parseInt(tableRows[1].getText());
+    ArrayList<Tag> tableRows = child.find_all("tr");
+    String key = tableRows.get(0).getText();
+    String value = Integer.parseInt(tableRows.get(0).getText());
     entries.put(key, value);
 }
 // {"Rank": 10, "Max Combo": 12, "Max Speed": 230, "Avg. Speed": 139}
