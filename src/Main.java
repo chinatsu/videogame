@@ -139,7 +139,7 @@ public class Main extends Application {
             if (this.map.getValueAt(point) == 2) {
                 // When the player has moved on top of a traversable wall,
                 // turn it into a real wall which cannot be moved into
-                // afterwards.
+                // after moving off.
                 this.map.setValueAt(point, 1);
             }
             switch (e.getCode()) {
