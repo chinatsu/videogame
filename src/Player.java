@@ -1,4 +1,5 @@
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Paint;
 
 import java.awt.Point;
 
@@ -12,12 +13,14 @@ class Player extends Unit {
     private final int[][] array;
     private final GraphicsContext gc;
     private Point point;
+    private String color;
 
     Player(GraphicsContext gc, int[][] array, String color) {
         super(gc, array, color);
         this.point = this.getCoordinates();
         this.gc = gc;
         this.array = array;
+        this.color = color;
     }
     /**
      * Move the player to another space relative from its current position
@@ -25,6 +28,7 @@ class Player extends Unit {
      * @param y     moves the player vertically (negative is upwards)
      */
     void move(int x, int y) {
+        this.gc.setFill(Paint.valueOf(this.color));
         int arrayX = this.getArrayCoordinates().x; // Use array coordinates for clearer
         int arrayY = this.getArrayCoordinates().y; // position checks
         if (arrayX + x > Main.SIZE - 1 || arrayX + x < 0) {
@@ -46,6 +50,7 @@ class Player extends Unit {
      * Rotate the player counter clockwise around the grid's center.
      */
     void moveRotate() {
+        this.gc.setFill(Paint.valueOf(this.color));
         this.gc.clearRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
         double c = this.array.length/2;
         double new_y = (0 - (this.point.x/Main.SCALE - c) + c - 1)*Main.SCALE;

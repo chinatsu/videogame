@@ -26,7 +26,7 @@ class Unit {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
                                Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
-        while (this.array[this.point.y/Main.SCALE][this.point.x/Main.SCALE] == 1) {
+        while (this.array[this.point.y/Main.SCALE][this.point.x/Main.SCALE] != 0) {
             // If a wall exists where the unit has spawned, try again until we spawn on a floor
             this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
                                    Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
