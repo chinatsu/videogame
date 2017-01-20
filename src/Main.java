@@ -5,7 +5,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import java.awt.Point;
 
 /**
  * The main class for a simple 2D videogame. This is the
@@ -62,7 +61,7 @@ public class Main extends Application {
     static final String COLOR_FLOOR_ALT = "#faf8ff";
 
     private LogicHandler logic;
-    private Scene scene;
+    private Graphics graphics;
 
     /**
      * Launches JavaFX with arguments
@@ -75,45 +74,21 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("A videogame");
-        Canvas bgCanvas = new Canvas(SIZE*SCALE, SIZE*SCALE);
-        Canvas fgCanvas = new Canvas(SIZE*SCALE, SIZE*SCALE);
-        this.logic = new LogicHandler(bgCanvas, fgCanvas);
-        drawLines(bgCanvas);
-        this.logic.getMap().drawArray();
-        Canvas[] canvases = new Canvas[] {bgCanvas, fgCanvas};
-        this.scene = initScene(canvases);
-        primaryStage.setScene(this.scene);
-        primaryStage.show();
+        this.graphics = new Graphics(primaryStage);
+        this.logic = new LogicHandler(graphics);
+        setInput(graphics.getScene());
     }
 
-    /**
-     * Gathers the canvases and adds them to a StackPane object,
-     * the StackPane is then used to initiate a Scene which is returned
-     * @param canvases a list of Canvas objects to add to the StackPane
-     * @return  a resulting Scene with the added Canvas layers
-     */
-    private Scene initScene(Canvas[] canvases) {
-        StackPane root = new StackPane();
-        for (Canvas canvas : canvases) {
-            root.getChildren().add(canvas);
-        }
-        root.setStyle("-fx-background-color: " + COLOR_FLOOR);
-        Scene scene = new Scene(root);
-        setInput(scene, root);
-        return scene;
-    }
 
     /**
      * A function which sets the game's controls
      * and checks if the player has won or has died.
      * TODO: Use a config file to map inputs and actions instead of hardcoding
      * @param scene a Scene object to handle inputs of.
-     * @param root  a StackPane to handle certain things
      */
-    private void setInput(Scene scene, StackPane root) {
+    void setInput(Scene scene) {
         Player player = this.logic.getPlayer();
         scene.setOnKeyPressed(e -> {
-            this.logic.tick();
             switch (e.getCode()) {
                 case D:
                 case RIGHT:
@@ -132,7 +107,7 @@ public class Main extends Application {
                     player.move(0, 1);
                     break;
                 case R:
-                    swapBackground(root);
+                    this.graphics.swapBackground();
                     break;
                 case Q:
                     player.moveRotate();
@@ -146,37 +121,8 @@ public class Main extends Application {
                     System.out.println("Exiting game.");
                     System.exit(0);
             }
-            this.logic.tock();
-
+            this.logic.tick();
         });
     }
-    /**
-     * Draw grid lines onto a layer
-     * @param canvas    a Canvas instance to draw onto
-     */
-    private void drawLines(Canvas canvas) {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Paint.valueOf(COLOR_GRID));
-        for (int i = 0; i < gc.getCanvas().getWidth(); i+=SCALE) {
-            // Since the canvas is always equilateral, we can draw vertical
-            // and horizontal lines in every iteration
-            gc.strokeLine(i, 0, i, gc.getCanvas().getHeight());
-            gc.strokeLine(0, i, gc.getCanvas().getWidth(), i);
-        }
-    }
 
-    /**
-     * Change the background of the floor tiles.
-     * This may at some point become more than a useless feature, and
-     * alter gameplay in some way or another
-     * @param root  the root StackPane object containing all the GraphicsContext layers
-     */
-    private void swapBackground(StackPane root) {
-        if (root.getStyle().equals("-fx-background-color: " + COLOR_FLOOR)) {
-            root.setStyle("-fx-background-color: " + COLOR_FLOOR_ALT);
-        }
-        else if (root.getStyle().equals("-fx-background-color: " + COLOR_FLOOR_ALT)) {
-            root.setStyle("-fx-background-color: " + COLOR_FLOOR);
-        }
-    }
 }

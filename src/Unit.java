@@ -1,5 +1,4 @@
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Paint;
+import javafx.scene.canvas.Canvas;
 import java.awt.Point;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,17 +11,20 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 class Unit {
     private Point point;
-    private final GraphicsContext gc;
+    private final Graphics graphics;
     private final int[][] array;
+    private final String color;
+    private Canvas canvas;
 
     /**
      * The constructor function for Unit, which spawns to a random position on a 2D array.
-     * @param gc    a GraphicsContext layer to spawn the graphical unit representation onto
-     * @param array   an int[][] from the Map, it is only used to check wall collision as of right now
-     * @param color a String formatted as a CSS color code to color the unit, e.g. "#0000ff"
+     * @param graphics           a Graphics object to handle drawing of the Unit
+     * @param array              an int[][] from the Map, it is only used to check wall collision as of right now
+     * @param color              a String formatted as a CSS color code to color the unit, e.g. "#0000ff"
      */
-    Unit(GraphicsContext gc, int[][] array, String color) {
+    Unit(Graphics graphics, int[][] array, String color) {
         this.array = array;
+        this.color = color;
         ThreadLocalRandom random = ThreadLocalRandom.current();
         this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
                                Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
@@ -31,9 +33,9 @@ class Unit {
             this.point = new Point(Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE),
                                    Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
         }
-        this.gc = gc;
-        this.gc.setFill(Paint.valueOf(color));
-        this.gc.fillRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
+        this.graphics = graphics;
+        this.canvas = this.graphics.getFgCanvas();
+        this.graphics.drawCell(this.canvas, this.getArrayCoordinates(), this.color);
     }
 
     /**

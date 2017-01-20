@@ -1,5 +1,4 @@
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Paint;
+import javafx.scene.canvas.Canvas;
 
 import java.awt.Point;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,10 +13,16 @@ import java.util.concurrent.ThreadLocalRandom;
 class Map {
     private final int[][] array;
     private final OpenSimplexNoise noise;
-    private GraphicsContext gc;
+    private Graphics graphics;
+    private Canvas canvas;
 
-    Map(GraphicsContext gc) {
-        this.gc = gc;
+    /**
+     * Constructor for Map objects
+     * @param graphics      a GraphicsContext to draw the map onto
+     */
+    Map(Graphics graphics) {
+        this.graphics = graphics;
+        this.canvas = this.graphics.getBgCanvas();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         this.array = new int[Main.SIZE][Main.SIZE];
         this.noise = new OpenSimplexNoise(random.nextLong(100));
@@ -50,42 +55,40 @@ class Map {
      * @param value     a value to set at the array position
      */
     void setValueAt(Point point, int value) {
-        this.gc.clearRect(point.x*Main.SCALE, point.y*Main.SCALE, Main.SCALE, Main.SCALE);
+        this.graphics.clearCell(this.canvas, point);
         this.array[point.y][point.x] = value;
-        drawCell(point.x, point.y);
+        drawMapCell(point);
     }
 
     /**
      * Draws the representation of our map onto a GraphicsContext,
      * a 1 in the array will be a wall on the layer.
      */
-    void drawArray() {
+    void drawMap() {
         for (int y = 0; y < this.array.length; y++) {
             for (int x = 0; x < this.array.length; x++) {
-                drawCell(x, y);
+                Point point = new Point(x, y);
+                drawMapCell(point);
             }
         }
     }
 
     /**
      * Draws a single cell at a specific point
-     * @param x     the x value of the point
-     * @param y     the y value of the point
+     * @param point     a point in the array coordinate system to draw at
      */
-    private void drawCell(int x, int y) {
-        if (this.array[y][x] == 1) {
-            this.gc.setFill(javafx.scene.paint.Paint.valueOf(Main.COLOR_WALL));
-            this.gc.fillRect(x*Main.SCALE, y*Main.SCALE, Main.SCALE, Main.SCALE);
+    private void drawMapCell(Point point) {
+        if (this.array[point.y][point.x] == 1) {
+            this.graphics.drawCell(this.canvas, point, Main.COLOR_WALL);
         }
-        else if (this.array[y][x] == 2) {
-            this.gc.setFill(Paint.valueOf(Main.COLOR_WALL_ALT));
-            this.gc.fillRect(x*Main.SCALE, y*Main.SCALE, Main.SCALE, Main.SCALE);
+        else if (this.array[point.y][point.x] == 2) {
+            this.graphics.drawCell(this.canvas, point, Main.COLOR_WALL_ALT);
         }
     }
     /**
      * Returns the value in the array at a specific point
-     * @param point a Point at which the value should be returned
-     * @return  an int representing the value in the specified cell
+     * @param point     a Point at which the value should be returned
+     * @return          an int representing the value in the specified cell
      */
     int getValueAt(Point point){
         return this.array[point.y][point.x];
