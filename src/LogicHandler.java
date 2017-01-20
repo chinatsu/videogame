@@ -1,6 +1,3 @@
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-
 import java.awt.Point;
 
 /**
@@ -33,6 +30,7 @@ public class LogicHandler {
 
     /**
      *  Kill the player if it has moved into a wall
+     *  @param playerPoint      a Point representing the player's position in the 2D array
      */
     private void killPlayer(Point playerPoint) {
         if (this.map.getValueAt(playerPoint) == 1) {
@@ -43,6 +41,7 @@ public class LogicHandler {
 
     /**
      * End the game if the player has reached the goal
+     * @param playerPoint       a Point representing the player's position in the 2D array
      */
     private void winGame(Point playerPoint) {
         if (playerPoint.equals(goal.getArrayCoordinates())) {
@@ -51,6 +50,10 @@ public class LogicHandler {
         }
     }
 
+    /**
+     * Only changes a "traversable" wall if the player is on top of it
+     * @param playerPoint       a Point representing the player's position in the 2D array
+     */
     private void changeWall(Point playerPoint) {
         if (this.map.getValueAt(playerPoint) == 2) {
             this.map.setValueAt(playerPoint, 1);

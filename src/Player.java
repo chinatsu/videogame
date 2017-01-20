@@ -6,7 +6,7 @@ import java.awt.Point;
  * A Player class which extends Unit with methods to
  * control the Player.
  * @author Kent Daleng
- * @version 0.1 (2017.01.13)
+ * @version 0.2 (2017.01.20)
  */
 class Player extends Unit {
     private final int[][] array;

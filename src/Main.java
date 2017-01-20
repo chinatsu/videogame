@@ -11,7 +11,7 @@ import javafx.stage.Stage;
  * top-level class in the project, and utilizes JavaFX
  * canvases to draw a map, as well as player and goal objects.
  * @author Kent Daleng
- * @version 0.2 (2017.01.13)
+ * @version 0.3 (2017.01.20)
  */
 public class Main extends Application {
     /**

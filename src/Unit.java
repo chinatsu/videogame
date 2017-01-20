@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * It contains some functions primarily to control an eventual player,
  * which also controls drawing onto a GraphicsContext.
  * @author Kent Daleng
- * @version 0.2 (2017.01.13)
+ * @version 0.3 (2017.01.20)
  */
 class Unit {
     private Point point;

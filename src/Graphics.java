@@ -9,6 +9,8 @@ import java.awt.Point;
 
 /**
  * A class for handling graphical changes
+ * @author Kent Daleng
+ * @version 0.1 (2017.01.20)
  */
 public class Graphics {
     private Canvas bgCanvas;
@@ -16,6 +18,10 @@ public class Graphics {
     private Scene scene;
     private StackPane root;
 
+    /**
+     * Constructor for a Graphics handler
+     * @param primaryStage      the base Stage object
+     */
     Graphics(Stage primaryStage) {
         this.bgCanvas = new Canvas(Main.SIZE*Main.SCALE, Main.SIZE*Main.SCALE);
         this.fgCanvas = new Canvas(Main.SIZE*Main.SCALE, Main.SIZE*Main.SCALE);
@@ -28,18 +34,34 @@ public class Graphics {
         primaryStage.show();
     }
 
+    /**
+     * Get the background canvas
+     * @return  the background Canvas object
+     */
     public Canvas getBgCanvas() {
         return this.bgCanvas;
     }
 
+    /**
+     * Get the foreground canvas
+     * @return  the foreground Canvas object
+     */
     public Canvas getFgCanvas() {
         return this.fgCanvas;
     }
 
+    /**
+     * Get the scene
+     * @return  the Scene object
+     */
     public Scene getScene() {
         return this.scene;
     }
 
+    /**
+     * Get the root pane
+     * @return  the root StackPane object
+     */
     public StackPane getRoot() {
         return this.root;
     }
@@ -89,12 +111,23 @@ public class Graphics {
         }
     }
 
+    /**
+     * Draw a cell at a specific point, onto a canvas
+     * @param canvas    the Canvas object to which the cell shall be drawn
+     * @param point     a Point representing a position in a 2D array
+     * @param color     a String representing a hex value, e.g. "#FF000"
+     */
     public void drawCell(Canvas canvas, Point point, String color) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.setFill(Paint.valueOf(color));
         graphicsContext.fillRect(point.x*Main.SCALE, point.y*Main.SCALE, Main.SCALE, Main.SCALE);
     }
 
+    /**
+     * Clear a cell at a specific point on a canvas
+     * @param canvas    a Canvas object to clear a cell on
+     * @param point     a Point representing a position in a 2D array
+     */
     public void clearCell(Canvas canvas, Point point) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.clearRect(point.x*Main.SCALE, point.y*Main.SCALE, Main.SCALE, Main.SCALE);

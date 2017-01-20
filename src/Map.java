@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 0s and 1s into a 2D array.
  * The class also handles drawing a representation of the array onto a GraphicsContext.
  * @author Kent Daleng
- * @version 0.2 (2017.01.13)
+ * @version 0.3 (2017.01.20)
  */
 class Map {
     private final int[][] array;
