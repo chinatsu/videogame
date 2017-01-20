@@ -1,4 +1,4 @@
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.canvas.Canvas;
 
 import java.awt.Point;
 
@@ -6,18 +6,22 @@ import java.awt.Point;
  * A Player class which extends Unit with methods to
  * control the Player.
  * @author Kent Daleng
- * @version 0.1 (2017.01.13)
+ * @version 0.2 (2017.01.20)
  */
 class Player extends Unit {
     private final int[][] array;
-    private final GraphicsContext gc;
+    private final Canvas canvas;
+    private Graphics graphics;
     private Point point;
+    private String color;
 
-    Player(GraphicsContext gc, int[][] array, String color) {
-        super(gc, array, color);
+    Player(Graphics graphics, int[][] array, String color) {
+        super(graphics, array, color);
+        this.graphics = graphics;
         this.point = this.getCoordinates();
-        this.gc = gc;
+        this.canvas = this.graphics.getFgCanvas();
         this.array = array;
+        this.color = color;
     }
     /**
      * Move the player to another space relative from its current position
@@ -25,32 +29,34 @@ class Player extends Unit {
      * @param y     moves the player vertically (negative is upwards)
      */
     void move(int x, int y) {
-        int arrayX = this.getArrayCoordinates().x; // Use array coordinates for clearer
-        int arrayY = this.getArrayCoordinates().y; // position checks
-        if (arrayX + x > Main.SIZE - 1 || arrayX + x < 0) {
+        Point oldPoint = this.getArrayCoordinates();
+        Point newPoint = new Point(oldPoint.x + x, oldPoint.y + y);
+        if (newPoint.x > Main.SIZE - 1 || newPoint.x < 0) {
             return;
         }
-        else if (arrayY + y > Main.SIZE - 1 || arrayY + y < 0) {
+        else if (newPoint.y > Main.SIZE - 1 || newPoint.y < 0) {
             return;
         }
-        if (this.array[arrayY + y][arrayX + x] == 1) {
+        if (this.array[newPoint.y][newPoint.x] == 1) {
             return;
         }
-        this.gc.clearRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
-        this.point.x += x*Main.SCALE;
-        this.point.y += y*Main.SCALE;
-        this.gc.fillRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
+        this.graphics.clearCell(this.canvas, oldPoint);
+        this.point.x = newPoint.x * Main.SCALE;
+        this.point.y = newPoint.y * Main.SCALE;
+        this.graphics.drawCell(this.canvas, newPoint, this.color);
     }
 
     /**
      * Rotate the player counter clockwise around the grid's center.
      */
     void moveRotate() {
-        this.gc.clearRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
+        Point oldPoint = this.getArrayCoordinates();
+        this.graphics.clearCell(this.canvas, oldPoint);
         double c = this.array.length/2;
         double new_y = (0 - (this.point.x/Main.SCALE - c) + c - 1)*Main.SCALE;
         this.point.x = this.point.y; // After rotating, the new x value will always be the old y value
         this.point.y = (int) new_y;
-        this.gc.fillRect(this.point.x, this.point.y, Main.SCALE, Main.SCALE);
+        Point newPoint = this.getArrayCoordinates();
+        this.graphics.drawCell(this.canvas, newPoint, this.color);
     }
 }
