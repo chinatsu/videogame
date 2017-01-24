@@ -11,16 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MapTests {
 
     private Graphics graphics;
-    private LogicHandler logic;
     private Map map;
 
 
     MapTests() {
         this.graphics = new MockGraphicsHandler();
-        this.logic = new LogicHandler(graphics);
-        this.map = this.logic.getMap();
+        this.map = new Map(graphics);
     }
 
+    /**
+     * Tests if a set value is found in the map array afterwards
+     * @throws OutOfBoundsException throws an exception if the point accessed is out of bounds
+     */
     @Test
     public void testSetValue() throws OutOfBoundsException {
         Point point = new Point(0, 0);

@@ -36,6 +36,7 @@ public class GraphicsHandler implements Graphics {
      * Get the scene
      * @return  the Scene object
      */
+    @Override
     public Scene getScene() {
         return this.scene;
     }
@@ -45,6 +46,7 @@ public class GraphicsHandler implements Graphics {
      * This may at some point become more than a useless feature, and
      * alter gameplay in some way or another
      */
+    @Override
     public void swapBackground() {
         if (this.root.getStyle().equals("-fx-background-color: " + Main.COLOR_FLOOR)) {
             setBackground(Main.COLOR_FLOOR_ALT);
@@ -60,6 +62,7 @@ public class GraphicsHandler implements Graphics {
      * @param point     a Point representing a position in a 2D array
      * @param color     a String representing a hex value, e.g. "#FF000"
      */
+    @Override
     public void drawCell(String target, Point point, String color) {
         GraphicsContext graphicsContext = getCanvas(target).getGraphicsContext2D();
         graphicsContext.setFill(Paint.valueOf(color));
@@ -71,6 +74,7 @@ public class GraphicsHandler implements Graphics {
      * @param target    the String representing the target canvas in a private HashMap. Can either be "bg" or "fg"
      * @param point     a Point representing a position in a 2D array
      */
+    @Override
     public void clearCell(String target, Point point) {
         GraphicsContext graphicsContext = getCanvas(target).getGraphicsContext2D();
         graphicsContext.clearRect(point.x*Main.SCALE, point.y*Main.SCALE, Main.SCALE, Main.SCALE);
@@ -78,8 +82,10 @@ public class GraphicsHandler implements Graphics {
 
     /**
      * Get the background canvas
+     * @param target    the String representing the target canvas in a private HashMap. Can either be "bg" or "fg"
      * @return  the background Canvas object
      */
+
     private Canvas getCanvas(String target) {
         return this.canvases.get(target);
     }
@@ -88,6 +94,7 @@ public class GraphicsHandler implements Graphics {
      * which is returned
      * @return  the new StackPane object
      */
+
     private StackPane initStackPane() {
         StackPane root = new StackPane();
         root.getChildren().add(this.canvases.get("bg"));
@@ -96,7 +103,7 @@ public class GraphicsHandler implements Graphics {
     }
 
     /**
-     * Creates a HashMap of `<String, Canvas>` pairs, to map "bg" and "fg"
+     * Creates a HashMap of String, Canvas pairs, to map "bg" and "fg"
      * to the background and foreground canvas, respectively.
      * @return  a HashMap containing bg and fg Canvases.
      */

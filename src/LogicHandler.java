@@ -59,8 +59,9 @@ public class LogicHandler {
     }
 
     /**
-     * Only changes a "traversable" wall if the player is on top of it
+     * Only changes a "trap" wall if the player is on top of it
      * @param playerPoint       a Point representing the player's position in the 2D array
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
     private void changeWall(Point playerPoint) throws OutOfBoundsException {
         if (this.map.getValueAt(playerPoint) == 2) {

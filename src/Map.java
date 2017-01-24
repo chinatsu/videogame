@@ -50,6 +50,7 @@ class Map {
      * and draws the resulting graphical representation
      * @param point     a Point with array coordinates
      * @param value     a value to set at the array position
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
     void setValueAt(Point point, int value) throws OutOfBoundsException {
         if (point.x > this.array.length || point.y > this.array.length) {
@@ -89,6 +90,7 @@ class Map {
      * Returns the value in the array at a specific point
      * @param point     a Point at which the value should be returned
      * @return          an int representing the value in the specified cell
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
     int getValueAt(Point point) throws OutOfBoundsException {
         if (point.x > this.array.length || point.y > this.array.length) {
