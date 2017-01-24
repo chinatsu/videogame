@@ -1,4 +1,3 @@
-import javafx.scene.canvas.Canvas;
 import java.awt.Point;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -7,14 +6,14 @@ import java.util.concurrent.ThreadLocalRandom;
  * It contains some functions primarily to control an eventual player,
  * which also controls drawing onto a GraphicsContext.
  * @author Kent Daleng
- * @version 0.3 (2017.01.20)
+ * @version 0.4 (2017.01.24)
  */
 class Unit {
     private Point point;
     private final Graphics graphics;
     private final int[][] array;
     private final String color;
-    private Canvas canvas;
+    private final static String CANVAS = "fg";
 
     /**
      * The constructor function for Unit, which spawns to a random position on a 2D array.
@@ -34,8 +33,7 @@ class Unit {
                                    Math.round(random.nextInt(0, this.array.length-1) * Main.SCALE));
         }
         this.graphics = graphics;
-        this.canvas = this.graphics.getFgCanvas();
-        this.graphics.drawCell(this.canvas, this.getArrayCoordinates(), this.color);
+        this.graphics.drawCell(CANVAS, this.getArrayCoordinates(), this.color);
     }
 
     /**

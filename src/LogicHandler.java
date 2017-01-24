@@ -3,7 +3,7 @@ import java.awt.Point;
 /**
  * A class for handling the game's logic.
  * @author Kent Daleng
- * @version 0.2 (2017.01.20)
+ * @version 0.3 (2017.01.24)
  */
 public class LogicHandler {
     private Player player;
@@ -25,7 +25,11 @@ public class LogicHandler {
         Point playerPoint = this.player.getArrayCoordinates();
         killPlayer(playerPoint);
         winGame(playerPoint);
-        changeWall(playerPoint);
+        try {
+            changeWall(playerPoint);
+        } catch (OutOfBoundsException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -33,9 +37,13 @@ public class LogicHandler {
      *  @param playerPoint      a Point representing the player's position in the 2D array
      */
     private void killPlayer(Point playerPoint) {
-        if (this.map.getValueAt(playerPoint) == 1) {
-            System.out.println("You got stuck in a wall and died");
-            System.exit(0);
+        try {
+            if (this.map.getValueAt(playerPoint) == 1) {
+                System.out.println("You got stuck in a wall and died");
+                System.exit(0);
+            }
+        } catch (OutOfBoundsException e) {
+            e.printStackTrace();
         }
     }
 
@@ -51,10 +59,11 @@ public class LogicHandler {
     }
 
     /**
-     * Only changes a "traversable" wall if the player is on top of it
+     * Only changes a "trap" wall if the player is on top of it
      * @param playerPoint       a Point representing the player's position in the 2D array
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
-    private void changeWall(Point playerPoint) {
+    private void changeWall(Point playerPoint) throws OutOfBoundsException {
         if (this.map.getValueAt(playerPoint) == 2) {
             this.map.setValueAt(playerPoint, 1);
         }

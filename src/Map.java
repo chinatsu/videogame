@@ -1,5 +1,3 @@
-import javafx.scene.canvas.Canvas;
-
 import java.awt.Point;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,15 +12,14 @@ class Map {
     private final int[][] array;
     private final OpenSimplexNoise noise;
     private Graphics graphics;
-    private Canvas canvas;
+    private final static String CANVAS = "bg";
 
     /**
      * Constructor for Map objects
-     * @param graphics      a GraphicsContext to draw the map onto
+     * @param graphics  a Graphics object to handle our graphics calls
      */
     Map(Graphics graphics) {
         this.graphics = graphics;
-        this.canvas = this.graphics.getBgCanvas();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         this.array = new int[Main.SIZE][Main.SIZE];
         this.noise = new OpenSimplexNoise(random.nextLong(100));
@@ -53,9 +50,13 @@ class Map {
      * and draws the resulting graphical representation
      * @param point     a Point with array coordinates
      * @param value     a value to set at the array position
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
-    void setValueAt(Point point, int value) {
-        this.graphics.clearCell(this.canvas, point);
+    void setValueAt(Point point, int value) throws OutOfBoundsException {
+        if (point.x > this.array.length || point.y > this.array.length) {
+            throw new OutOfBoundsException();
+        }
+        this.graphics.clearCell(CANVAS, point);
         this.array[point.y][point.x] = value;
         drawMapCell(point);
     }
@@ -79,18 +80,22 @@ class Map {
      */
     private void drawMapCell(Point point) {
         if (this.array[point.y][point.x] == 1) {
-            this.graphics.drawCell(this.canvas, point, Main.COLOR_WALL);
+            this.graphics.drawCell(CANVAS, point, Main.COLOR_WALL);
         }
         else if (this.array[point.y][point.x] == 2) {
-            this.graphics.drawCell(this.canvas, point, Main.COLOR_WALL_ALT);
+            this.graphics.drawCell(CANVAS, point, Main.COLOR_WALL_ALT);
         }
     }
     /**
      * Returns the value in the array at a specific point
      * @param point     a Point at which the value should be returned
      * @return          an int representing the value in the specified cell
+     * @throws OutOfBoundsException     if a point tries to access the map out of bounds, an error is thrown
      */
-    int getValueAt(Point point){
+    int getValueAt(Point point) throws OutOfBoundsException {
+        if (point.x > this.array.length || point.y > this.array.length) {
+            throw new OutOfBoundsException();
+        }
         return this.array[point.y][point.x];
     }
 
