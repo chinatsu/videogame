@@ -1,17 +1,13 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
- * The main class for a simple 2D videogame. This is the
+ * The main class for a simple 2D video game. This is the
  * top-level class in the project, and utilizes JavaFX
  * canvases to draw a map, as well as player and goal objects.
  * @author Kent Daleng
- * @version 0.3 (2017.01.20)
+ * @version 0.4 (2017.01.24)
  */
 public class Main extends Application {
     /**
@@ -31,7 +27,7 @@ public class Main extends Application {
     static final String COLOR_WALL = "#000000";
 
     /**
-     * Color of "traversable" walls
+     * Color of "trap" walls
      */
     static final String COLOR_WALL_ALT = "#333333";
 
@@ -73,8 +69,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("A videogame");
-        this.graphics = new Graphics(primaryStage);
+        primaryStage.setTitle("A video game");
+        this.graphics = new GraphicsHandler(primaryStage);
         this.logic = new LogicHandler(graphics);
         setInput(graphics.getScene());
     }
@@ -86,7 +82,7 @@ public class Main extends Application {
      * TODO: Use a config file to map inputs and actions instead of hardcoding
      * @param scene a Scene object to handle inputs of.
      */
-    void setInput(Scene scene) {
+    private void setInput(Scene scene) {
         Player player = this.logic.getPlayer();
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
